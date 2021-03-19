@@ -3,10 +3,10 @@
 from aws_cdk import core
 from webapp.vpc import VPCStack
 
-selected_env = core.Environment(account="658564819138", region="us-east-1")
+selected_env = core.Environment(account="658564819138", region="ap-southeast-1")
 
 app = core.App()
 
-vpc = VPCStack(app,'vpc', env=selected_env)
+vpcStack = VPCStack(app, 'vpc', env=selected_env)
 
 app.synth()

@@ -3,5 +3,6 @@
   "context":{
     "project_name": "webapp",
     "env": "dev"
-  }
+  },
+  "progress": "events"
 }
