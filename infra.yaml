@@ -1,0 +1,6 @@
+vpc:
+  name: webapp-vpc
+  cidr: "100.100.0.0/16"
+ec2:
+  name: webapp
+  ssh_key: hainam_aws
