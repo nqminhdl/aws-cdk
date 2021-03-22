@@ -9,7 +9,7 @@ import json
 
 class RDSStack(core.Stack):
 
-    def __init__(self, scope: core.Construct, id: str, vpc=ec2.Vpc, **kwargs) -> None:
+    def __init__(self, scope: core.Construct, id: str, vpc, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         prj_name = self.node.try_get_context("project_name")
@@ -23,7 +23,10 @@ class RDSStack(core.Stack):
         )
 
         for subnet in vpc.private_subnets:
-            rds_sg.add_ingress_rule(peer=ec2.Peer.ipv4(subnet.ipv4_cidr_block),connection=ec2.Port.tcp(3306),description='Allow all private subnet to access RDS')
+            rds_sg.add_ingress_rule(
+                    peer=ec2.Peer.ipv4(subnet.ipv4_cidr_block),
+                    connection=ec2.Port.tcp(3306),
+                    description='Allow all private subnet to access RDS')
 
         db_mysql = rds.DatabaseCluster(self,'mysql',
             default_database_name=prj_name + env_name,
@@ -38,4 +41,3 @@ class RDSStack(core.Stack):
             ),
             removal_policy=core.RemovalPolicy.DESTROY
         )
-
