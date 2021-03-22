@@ -17,4 +17,8 @@ vpc = VPCStack(app,'vpc', env=selected_env)
 ec2 = Ec2Stack(app, 'ec2', env=selected_env, vpc=vpc.vpc, config=config)
 rds = RDSStack(app, 'rds', vpc=vpc.vpc, env=selected_env)
 
+core.Tags.of(app).add("Managed-By", "DevOps")
+core.Tags.of(app).add("Provisioned-By", "AWS CDK")
+core.Tags.of(app).add("CDK Language", "Python")
+
 app.synth()
