@@ -4,5 +4,6 @@
     "project_name": "webapp",
     "env": "dev"
   },
-  "progress": "events"
+  "progress": "events",
+  "toolkitBucketName": "aws-cdk-asset-store"
 }

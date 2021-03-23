@@ -1,6 +1,7 @@
 import os
 from aws_cdk import (
     aws_ec2 as ec2,
+    aws_autoscaling as autoscaling,
     core
 )
 
@@ -17,17 +18,25 @@ class Ec2Stack(core.Stack):
             "ap-southeast-1": "ami-028be27cf930f7a43"
             })
 
-        instance = ec2.Instance(
+        # Create bastion host
+        self.bastion = ec2.Instance(
                 self, 'Instance',
                 instance_type = ec2.InstanceType("t3.small"),
-                instance_name = f"{name}-test",
+                instance_name = f"{name}-bastion",
                 key_name      = f"{key}",
                 machine_image = ubuntu_ami,
                 vpc           = vpc,
                 vpc_subnets   = ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE),
             )
-        instance.connections.allow_from_any_ipv4(
-                port_range=ec2.Port.tcp(22),
-                description = 'Ssh connection')
+        self.bastion.apply_removal_policy(core.RemovalPolicy.DESTROY)
 
-        core.CfnOutput(self, f'{name}-public-ip', value=instance.instance_private_ip)
+        self.bastion.connections.allow_from_any_ipv4(
+            port_range  = ec2.Port.tcp(22),
+            description = 'Allow public SSH connections'
+        )
+        self.bastion.connections.allow_from_any_ipv4(
+            port_range  = ec2.Port.icmp_ping(),
+            description = 'Allow public ICMP ping'
+        )
+
+        core.CfnOutput(self, f'{name}-private-ip', value=self.bastion.instance_private_ip)
