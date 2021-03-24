@@ -26,10 +26,5 @@ class CloudFrontStack(core.Stack):
                 )
             ],
             #Edege server location https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_cloudfront/PriceClass.html#aws_cdk.aws_cloudfront.PriceClass
-            price_class   = cloudfront.PriceClass.PRICE_CLASS_ALL,
-            viewer_certificate = cloudfront.ViewerCertificate.from_acm_certificate(
-                certificate = aws_certificatemanager.Certificate.certificate_arn("arn:asdasd"),
-                aliases = "abc.domainname.com",
-                security_policy = cloudfront.SecurityPolicyProtocol.TLS_V1_2_2019
-            )
+            price_class   = cloudfront.PriceClass.PRICE_CLASS_ALL
         )
