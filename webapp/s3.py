@@ -24,3 +24,7 @@ class S3Stack(core.Stack):
             removal_policy=core.RemovalPolicy.DESTROY
         )
 
+        core.CfnOutput(self,'frontend-bucket-name-output',
+            value=frontend_bucket.bucket_name,
+            export_name='frontend-bucket-name'
+        )
