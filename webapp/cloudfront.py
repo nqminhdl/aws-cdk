@@ -27,8 +27,6 @@ class CloudFrontStack(core.Stack):
             ),
             removal_policy=core.RemovalPolicy.DESTROY
         )
-        frontend_bucket.grant_read_write(media_distribution_oai)
-        frontend_bucket.grant_delete(media_distribution_oai)
 
         media_distribution = cloudfront.CloudFrontWebDistribution(self, 'media-distribution',
             origin_configs  = [
