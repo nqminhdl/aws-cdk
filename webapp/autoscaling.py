@@ -50,7 +50,7 @@ class AutoscalingStack(core.Stack):
             security_group       = webapp_sg
         )
 
-        webapp_asg = autoscaling.AutoScalingGroup(self, 'webapp-asg',
+        self.webapp_asg = autoscaling.AutoScalingGroup(self, 'webapp-asg',
             vpc                     = vpc,
             auto_scaling_group_name = prj_name + env_name + '-webapp-asg',
             instance_type           = ec2.InstanceType("t3.small"),
