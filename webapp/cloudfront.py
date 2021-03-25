@@ -6,11 +6,29 @@ from aws_cdk import (
 
 class CloudFrontStack(core.Stack):
 
-    def __init__(self, scope: core.Construct, id: str, frontend_bucket, **kwargs) -> None:
+    def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         prj_name = self.node.try_get_context("project_name")
         env_name = self.node.try_get_context("env")
+
+        media_distribution_oai = cloudfront.OriginAccessIdentity(self, 'media-distribution-oai')
+        media_distribution_oai.apply_removal_policy(core.RemovalPolicy.DESTROY)
+
+        frontend_bucket = s3.Bucket(self, 'frontend-bucket',
+            access_control = s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
+            encryption     = s3.BucketEncryption.S3_MANAGED,
+            bucket_name    = prj_name + env_name + '-bucket',
+            block_public_access=s3.BlockPublicAccess(
+                block_public_acls=True,
+                block_public_policy=True,
+                ignore_public_acls=True,
+                restrict_public_buckets=True
+            ),
+            removal_policy=core.RemovalPolicy.DESTROY
+        )
+        frontend_bucket.grant_read_write(media_distribution_oai)
+        frontend_bucket.grant_delete(media_distribution_oai)
 
         media_distribution = cloudfront.CloudFrontWebDistribution(self, 'media-distribution',
             origin_configs  = [
@@ -20,16 +38,12 @@ class CloudFrontStack(core.Stack):
                     ],
                     origin_path = '/media',
                     s3_origin_source = cloudfront.S3OriginConfig(
-                        s3_bucket_source = s3.Bucket.from_bucket_name(self, 'frontend_bucket', frontend_bucket),
+                        s3_bucket_source = frontend_bucket,
                         origin_access_identity = cloudfront.OriginAccessIdentity(self,'frontend-origin')
                     )
                 )
             ],
             #Edege server location https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_cloudfront/PriceClass.html#aws_cdk.aws_cloudfront.PriceClass
-            price_class   = cloudfront.PriceClass.PRICE_CLASS_ALL,
-            viewer_certificate = cloudfront.ViewerCertificate.from_acm_certificate(
-                certificate = aws_certificatemanager.Certificate.certificate_arn("arn:asdasd"),
-                aliases = "abc.domainname.com",
-                security_policy = cloudfront.SecurityPolicyProtocol.TLS_V1_2_2019
-            )
+            price_class   = cloudfront.PriceClass.PRICE_CLASS_ALL
         )
+        media_distribution.apply_removal_policy(core.RemovalPolicy.DESTROY)
