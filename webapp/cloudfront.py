@@ -1,5 +1,6 @@
 from aws_cdk import (
-    aws_certificatemanager, aws_s3 as s3,
+    aws_s3 as s3,
+    aws_s3_deployment as s3_deployment,
     aws_cloudfront as cloudfront,
     core
 )
@@ -16,9 +17,11 @@ class CloudFrontStack(core.Stack):
         media_distribution_oai.apply_removal_policy(core.RemovalPolicy.DESTROY)
 
         frontend_bucket = s3.Bucket(self, 'frontend-bucket',
-            access_control = s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            encryption     = s3.BucketEncryption.S3_MANAGED,
-            bucket_name    = prj_name + env_name + '-bucket',
+            access_control         = s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
+            encryption             = s3.BucketEncryption.S3_MANAGED,
+            bucket_name            = prj_name + env_name + '-bucket',
+            website_index_document = 'index.html',
+            website_error_document = 'index.html',
             block_public_access=s3.BlockPublicAccess(
                 block_public_acls=True,
                 block_public_policy=True,
@@ -28,13 +31,17 @@ class CloudFrontStack(core.Stack):
             removal_policy=core.RemovalPolicy.DESTROY
         )
 
+        media_assets = s3_deployment.BucketDeployment(self, 'media-assets',
+            sources = [s3_deployment.Source.asset('./assets')],
+            destination_bucket = frontend_bucket
+        )
+
         media_distribution = cloudfront.CloudFrontWebDistribution(self, 'media-distribution',
             origin_configs  = [
                 cloudfront.SourceConfiguration(
                     behaviors = [
                         cloudfront.Behavior(is_default_behavior=True)
                     ],
-                    origin_path = '/media',
                     s3_origin_source = cloudfront.S3OriginConfig(
                         s3_bucket_source = frontend_bucket,
                         origin_access_identity = cloudfront.OriginAccessIdentity(self,'frontend-origin')

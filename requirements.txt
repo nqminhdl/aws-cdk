@@ -23,6 +23,7 @@ aws-cdk.aws-rds==1.94.1
 aws-cdk.aws-route53==1.94.1
 aws-cdk.aws-s3==1.94.1
 aws-cdk.aws-s3-assets==1.94.1
+aws-cdk.aws-s3-deployment==1.94.1
 aws-cdk.aws-sam==1.94.1
 aws-cdk.aws-secretsmanager==1.94.1
 aws-cdk.aws-signer==1.94.1
@@ -33,6 +34,7 @@ aws-cdk.cloud-assembly-schema==1.94.1
 aws-cdk.core==1.94.1
 aws-cdk.custom-resources==1.94.1
 aws-cdk.cx-api==1.94.1
+aws-cdk.lambda-layer-awscli==1.94.1
 aws-cdk.region-info==1.94.1
 cattrs==1.3.0
 constructs==3.3.65
