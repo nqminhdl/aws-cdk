@@ -18,8 +18,8 @@ class ALBStack(core.Stack):
         listener = lb.add_redirect(source_port=80, target_port=443)
         listener.connections.allow_default_port_from_any_ipv4("Open to the world")
 
-        https_listener =  lb.add_listener("HTTPS listener", port=443)
-        https_listener.add_targets("Target", port=80, targets=[asg])
-        https_listener.connections.allow_default_port_from_any_ipv4("Listen on HTTPS")
+        # https_listener =  lb.add_listener("HTTPS listener", port=443)
+        # https_listener.add_targets("Target", port=80, targets=[asg])
+        # https_listener.connections.allow_default_port_from_any_ipv4("Listen on HTTPS")
 
         core.CfnOutput(self,"LoadBalancer",export_name="LoadBalancer",value=lb.load_balancer_dns_name)
