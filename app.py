@@ -5,6 +5,8 @@ from aws_cdk import core
 from webapp.vpc import VPCStack
 from webapp.ec2 import Ec2Stack
 from webapp.autoscaling import AutoscalingStack
+# This will be commented in order to wait for feature request 'bootstrap_option' to be supported on launch template
+# from webapp.eks import EKSStack
 from webapp.rds import RDSStack
 from webapp.cloudfront import CloudFrontStack
 
@@ -18,6 +20,8 @@ app = core.App()
 vpc = VPCStack(app,'vpc', env=selected_env)
 ec2 = Ec2Stack(app, 'ec2', env=selected_env, vpc=vpc.vpc, config=config)
 autoscaling = AutoscalingStack(app, 'autoscaling', env=selected_env, vpc=vpc.vpc, bastion=ec2.bastion, config=config)
+# This will be commented in order to wait for feature request 'bootstrap_option' to be supported on launch template
+# eks = EKSStack(app, 'eks',  env=selected_env, vpc=vpc.vpc, config=config)
 rds = RDSStack(app, 'rds', vpc=vpc.vpc, env=selected_env)
 cloudfront = CloudFrontStack(app, 'cloudfront', env=selected_env)
 
